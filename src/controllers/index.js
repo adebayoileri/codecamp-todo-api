@@ -1,7 +1,8 @@
 // declare controllers
 const uuidv1 = require('uuid/v1');
-const todos = require('../dummyData/dummy')
-
+// const todos = require('../dummyData/dummy');
+//Bug: Reason const todos has been declared in the global scope...
+let todos = require('../dummyData/dummy')
 class TodoController {
   // GET /todos - get all of the todos we have in the system
   static getAllTodos(req, res) {
@@ -13,7 +14,10 @@ class TodoController {
 
   // GET /todos/:id
   static getTodoById(req, res) {
-    const id = parseInt(req.params.id, 10);
+    const id = req.params.id;
+
+ //BUG: trying to parse an invalid number 
+    // const id = parseInt(req.params.id, 10);
     const todo = todos.find(each => each.id === id);
     if (!todo) {
       return res.status(404).json({
@@ -83,7 +87,8 @@ class TodoController {
 
   // DELETE /todos/:id
   static deleteTodo(req, res) {
-    app.delete("/todos/:id", (req, res) => {
+    //express static allows to delete all files in a particular directory
+    // app.delete("/todos/:id", (req, res) => {});
       const id = req.params.id;
 
       const newTodos = todos.filter(todo => todo.id !== id);
@@ -93,7 +98,6 @@ class TodoController {
       return res.json({
         message: "Todo deleted successfully"
       });
-    });
   }
 }
 
